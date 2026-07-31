@@ -4,10 +4,10 @@ export
 export PROJECT_ROOT=${shell pwd}
 
 env-up:
-	docker compose up -d todoapp-postgres
+	@docker compose up -d todoapp-postgres
 
 env-down:
-	docker compose down todoapp-postgres
+	@docker compose down todoapp-postgres
 
 env-cleanup:
 	@read -p "Cleanup all volumes?. [y/N]: " ans;\
@@ -20,7 +20,7 @@ env-cleanup:
 	fi
 
 migrate-create:
-	@if [ -z "$seq" ]; then \
+	@if [ -z "$(seq)" ]; then \
 		echo "No get parametr seq. Example: make migrate-create seq=init"; \
 		exit 1; \
 	fi; \
@@ -28,4 +28,20 @@ migrate-create:
 		create \
 		-ext sql \
 		-dir /migrations \
-		-seq "${seq}"
+		-seq "$(seq)"
+
+migrate-up:
+	@make migrate-action action=up
+
+migrate-dowm:
+	@make migrate-action action=down
+
+migrate-action:
+	@if [ -z "$(action)" ]; then \
+		echo "No get parametr action. Example: make migrate-action action=up"; \
+		exit 1; \
+	fi; \
+	docker compose run --rm todoapp-postgres-migrate \
+		-path /migrations \
+		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable \
+		"$(action)"
