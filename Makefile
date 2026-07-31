@@ -1,0 +1,31 @@
+include .env
+export
+
+export PROJECT_ROOT=${shell pwd}
+
+env-up:
+	docker compose up -d todoapp-postgres
+
+env-down:
+	docker compose down todoapp-postgres
+
+env-cleanup:
+	@read -p "Cleanup all volumes?. [y/N]: " ans;\
+	if [ "$$ans" = "y" ]; then \
+		docker compose down todoapp-postgres && \
+		rm -rf out/pgdata && \
+		echo "Volumes cleanup!"; \
+	else \
+		echo "Volumes no cleanup"; \
+	fi
+
+migrate-create:
+	@if [ -z "$seq" ]; then \
+		echo "No get parametr seq. Example: make migrate-create seq=init"; \
+		exit 1; \
+	fi; \
+	docker compose run --rm todoapp-postgres-migrate \
+		create \
+		-ext sql \
+		-dir /migrations \
+		-seq "${seq}"
