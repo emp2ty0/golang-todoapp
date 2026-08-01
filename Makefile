@@ -19,6 +19,12 @@ env-cleanup:
 		echo "Volumes no cleanup"; \
 	fi
 
+env-port-forwarder:
+	@docker compose up -d port-forwarder
+
+env-port-close:
+	@docker compose down port-forwarder
+
 migrate-create:
 	@if [ -z "$(seq)" ]; then \
 		echo "No get parametr seq. Example: make migrate-create seq=init"; \
