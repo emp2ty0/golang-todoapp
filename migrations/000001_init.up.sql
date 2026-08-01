@@ -9,7 +9,7 @@ CREATE TABLE todoapp.users(
         AND
         char_length(phone_number) BETWEEN 3 AND 15
     )
-)
+);
 
 CREATE TABLE todoapp.tasks (
     id SERIAL PRIMARY KEY,
@@ -27,4 +27,4 @@ CREATE TABLE todoapp.tasks (
     ),
 
     author_user_id INTEGER NOT NULL REFERENCES todoapp.users(id)
-)
+);
