@@ -19,6 +19,15 @@ env-cleanup:
 		echo "Volumes no cleanup"; \
 	fi
 
+logs-cleanup:
+	@read -p "Cleanup all logs?. [y/N]: " ans;\
+	if [ "$$ans" = "y" ]; then \
+		rm -rf out/logs && \
+		echo "Volumes cleanup!"; \
+	else \
+		echo "Volumes no cleanup"; \
+	fi
+
 env-port-forwarder:
 	@docker compose up -d port-forwarder
 

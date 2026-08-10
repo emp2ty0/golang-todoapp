@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	core_logger "github.com/emp2ty0/golang-todoapp/internal/core/logger"
+	core_http_middleware "github.com/emp2ty0/golang-todoapp/internal/core/transport/http/middleware"
 	"go.uber.org/zap"
 )
 
@@ -15,13 +16,16 @@ type HTTPServer struct {
 
 	config Config
 	log    *core_logger.Logger
+
+	midleware []core_http_middleware.Middleware
 }
 
-func NewHTTPServer(config Config, log *core_logger.Logger) *HTTPServer {
+func NewHTTPServer(config Config, log *core_logger.Logger, midleware ...core_http_middleware.Middleware) *HTTPServer {
 	return &HTTPServer{
-		mux:    http.NewServeMux(),
-		config: config,
-		log:    log,
+		mux:       http.NewServeMux(),
+		config:    config,
+		log:       log,
+		midleware: midleware,
 	}
 }
 
@@ -34,9 +38,11 @@ func (h *HTTPServer) RegisterAPIRouters(routers ...*APIVersionRouter) {
 }
 
 func (h *HTTPServer) Run(ctx context.Context) error {
+	mux := core_http_middleware.ChainMidleware(h.mux, h.midleware...)
+
 	server := &http.Server{
 		Addr:    h.config.Addr,
-		Handler: h.mux,
+		Handler: mux,
 	}
 
 	ch := make(chan error, 1)
@@ -46,12 +52,12 @@ func (h *HTTPServer) Run(ctx context.Context) error {
 
 		err := server.ListenAndServe()
 
-		h.log.Warn("Start HTTP server", zap.String("addr", h.config.Addr))
-
 		if !errors.Is(err, http.ErrServerClosed) {
 			ch <- err
 		}
 	}()
+
+	h.log.Warn("Start HTTP server", zap.String("addr", h.config.Addr))
 
 	select {
 	case err := <-ch:
