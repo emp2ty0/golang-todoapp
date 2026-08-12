@@ -38,7 +38,7 @@ func NewLogger(config Config) (*Logger, error) {
 		return nil, fmt.Errorf("mkdir log logger %w", err)
 	}
 
-	timeStamp := time.Now().UTC().Format("2026-01-02T15-04-05.000000")
+	timeStamp := time.Now().UTC().Format("2006-01-02T15-04-05.000000")
 	logFilePath := filepath.Join(
 		config.Folder,
 		fmt.Sprintf("%s.log", timeStamp),
@@ -50,7 +50,7 @@ func NewLogger(config Config) (*Logger, error) {
 	}
 
 	zapConfig := zap.NewDevelopmentEncoderConfig()
-	zapConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2026-01-02T15:04:05.000000")
+	zapConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02T15:04:05.000000")
 
 	zapEncoder := zapcore.NewConsoleEncoder(zapConfig)
 
