@@ -23,6 +23,11 @@ type UserService interface {
 		limit *int,
 		offset *int,
 	) ([]domain.User, error)
+
+	GetUser(
+		ctx context.Context,
+		id *int,
+	) (domain.User, error)
 }
 
 func NewUserHTTPHandler(userSerice UserService) *UserHTTPHandler {
@@ -42,6 +47,11 @@ func (h *UserHTTPHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodGet,
 			Path:    "/users",
 			Handler: h.GetUsers,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    "/user",
+			Handler: h.GetUser,
 		},
 	}
 }

@@ -18,9 +18,9 @@ func (r *UsersRepository) GetUsers(
 	query := `
 	SELECT id, version, full_name, phone_number
 	FROM todoapp.users
+	ORDER BY id ASC
 	LIMIT $1
 	OFFSET $2
-	ORDER BY id ASC
 	`
 
 	rows, err := r.poll.Query(ctx, query, limit, offset)
@@ -49,18 +49,7 @@ func (r *UsersRepository) GetUsers(
 		return nil, fmt.Errorf("next rowa: %w", err)
 	}
 
-	var userDomains []domain.User
-
-	for _, user := range userModels {
-		userDomain := domain.NewUser(
-			user.ID,
-			user.Version,
-			user.FullName,
-			user.PhoneNumber,
-		)
-
-		userDomains = append(userDomains, userDomain)
-	}
+	userDomains := UserDomainsFromModels(userModels)
 
 	return userDomains, nil
 
