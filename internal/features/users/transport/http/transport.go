@@ -26,7 +26,7 @@ type UserService interface {
 
 	GetUser(
 		ctx context.Context,
-		id *int,
+		id int,
 	) (domain.User, error)
 }
 
@@ -50,7 +50,7 @@ func (h *UserHTTPHandler) Routes() []core_http_server.Route {
 		},
 		{
 			Method:  http.MethodGet,
-			Path:    "/user",
+			Path:    "/users/{id}",
 			Handler: h.GetUser,
 		},
 	}

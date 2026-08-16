@@ -9,7 +9,7 @@ import (
 
 func (r *UsersRepository) GetUser(
 	ctx context.Context,
-	id *int,
+	id int,
 ) (domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.poll.OpTimeout())
 	defer cancel()
@@ -20,7 +20,7 @@ func (r *UsersRepository) GetUser(
 	WHERE id = $1
 	`
 
-	row := r.poll.QueryRow(ctx, query, *id)
+	row := r.poll.QueryRow(ctx, query, id)
 
 	var userModel UserModel
 
