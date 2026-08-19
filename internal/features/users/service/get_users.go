@@ -8,7 +8,7 @@ import (
 	core_errors "github.com/emp2ty0/golang-todoapp/internal/core/errors"
 )
 
-func (u *UserService) GetUsers(
+func (s *UserService) GetUsers(
 	ctx context.Context,
 	limit *int,
 	offset *int,
@@ -21,7 +21,7 @@ func (u *UserService) GetUsers(
 		return nil, fmt.Errorf("offset not be negative %w", core_errors.ErrInvalidArgument)
 	}
 
-	userDomains, err := u.usersRepository.GetUsers(ctx, limit, offset)
+	userDomains, err := s.usersRepository.GetUsers(ctx, limit, offset)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get users: %w", err)
 	}

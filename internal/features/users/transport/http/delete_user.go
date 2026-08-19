@@ -8,21 +8,23 @@ import (
 	core_http_utils "github.com/emp2ty0/golang-todoapp/internal/core/transport/http/utils"
 )
 
-func (h *UserHTTPHandler) GetUser(rw http.ResponseWriter, r *http.Request) {
+func (h *UserHTTPHandler) DeleteUser(rw http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 	responseHandler := core_http_response.NewHTTPResponseHandler(log, rw)
-	userId, err := core_http_utils.GetIntPathValue(r, "id")
+
+	userID, err := core_http_utils.GetIntPathValue(r, "id")
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get user id path values")
+
+		return
 	}
 
-	user, err := h.userService.GetUser(ctx, userId)
-	if err != nil {
-		responseHandler.ErrorResponse(err, "failed to get user")
+	if err := h.userService.DeleteUser(ctx, userID); err != nil {
+		responseHandler.ErrorResponse(err, "failed to delete user")
+
+		return
 	}
 
-	response := UserDTOFromDomain(user)
-
-	responseHandler.JSONResponse(response, http.StatusOK)
+	responseHandler.NoContentResponse()
 }

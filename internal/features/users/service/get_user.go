@@ -7,11 +7,11 @@ import (
 	"github.com/emp2ty0/golang-todoapp/internal/core/domain"
 )
 
-func (u *UserService) GetUser(
+func (s *UserService) GetUser(
 	ctx context.Context,
 	id int,
 ) (domain.User, error) {
-	user, err := u.usersRepository.GetUser(ctx, id)
+	user, err := s.usersRepository.GetUser(ctx, id)
 	if err != nil {
 		return domain.User{}, fmt.Errorf("failed to get user: %w", err)
 	}

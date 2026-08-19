@@ -16,6 +16,10 @@ type HTTPResponseHandler struct {
 	rw  http.ResponseWriter
 }
 
+func (h *HTTPResponseHandler) NoContentResponse() {
+	h.rw.WriteHeader(http.StatusNoContent)
+}
+
 func NewHTTPResponseHandler(log *core_logger.Logger, rw http.ResponseWriter) *HTTPResponseHandler {
 	return &HTTPResponseHandler{
 		log: log,
