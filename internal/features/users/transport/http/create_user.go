@@ -16,7 +16,7 @@ type CreateUserRequest struct {
 
 type CreateUserResponse UserDTOResponse
 
-func (h *UserHTTPHandler) CreateUer(w http.ResponseWriter, r *http.Request) {
+func (h *UserHTTPHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	log := core_logger.FromContext(ctx)
