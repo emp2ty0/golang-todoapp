@@ -19,6 +19,15 @@ env-cleanup:
 		echo "Volumes no cleanup"; \
 	fi
 
+logs-cleanup:
+	@read -p "Cleanup all logs?. [y/N]: " ans;\
+	if [ "$$ans" = "y" ]; then \
+		rm -rf out/logs && \
+		echo "Volumes cleanup!"; \
+	else \
+		echo "Volumes no cleanup"; \
+	fi
+
 env-port-forwarder:
 	@docker compose up -d port-forwarder
 
@@ -51,3 +60,8 @@ migrate-action:
 		-path /migrations \
 		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable \
 		"$(action)"
+
+todoapp-run:
+	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
+	go mod tidy && \
+	go run cmd/todoapp/main.go
